@@ -239,6 +239,24 @@ export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
             )
           },
         },
+        fast: {
+          supported() {
+            const m = current()
+            if (!m) return false
+            return m.id === "gpt-5.4" && m.provider.id === "openai"
+          },
+          current() {
+            const m = current()
+            if (!m) return false
+            if (!(m.id === "gpt-5.4" && m.provider.id === "openai")) return false
+            return models.fast.get({ providerID: m.provider.id, modelID: m.id }) ?? false
+          },
+          set(value: boolean) {
+            const m = current()
+            if (!m) return
+            models.fast.set({ providerID: m.provider.id, modelID: m.id }, value || undefined)
+          },
+        },
       }
     })()
 

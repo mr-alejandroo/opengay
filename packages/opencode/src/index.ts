@@ -30,6 +30,7 @@ import { WebCommand } from "./cli/cmd/web"
 import { PrCommand } from "./cli/cmd/pr"
 import { SessionCommand } from "./cli/cmd/session"
 import { DbCommand } from "./cli/cmd/db"
+import { BenchCommand } from "./cli/cmd/bench"
 import path from "path"
 import { Global } from "./global"
 import { JsonMigration } from "./storage/json-migration"
@@ -153,6 +154,7 @@ let cli = yargs(hideBin(process.argv))
   .command(PrCommand)
   .command(SessionCommand)
   .command(DbCommand)
+  .command(BenchCommand)
 
 if (Installation.isLocal()) {
   cli = cli.command(WorkspaceServeCommand)

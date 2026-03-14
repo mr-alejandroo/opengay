@@ -27,6 +27,7 @@ import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
 import { Tooltip, TooltipKeybind } from "@opencode-ai/ui/tooltip"
 import { IconButton } from "@opencode-ai/ui/icon-button"
 import { Select } from "@opencode-ai/ui/select"
+import { Switch as SwitchControl } from "@opencode-ai/ui/switch"
 import { RadioGroup } from "@opencode-ai/ui/radio-group"
 import { useDialog } from "@opencode-ai/ui/context/dialog"
 import { ModelSelectorPopover } from "@/components/dialog-select-model"
@@ -1494,6 +1495,28 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                     variant="ghost"
                   />
                 </TooltipKeybind>
+                <Show when={local.model.fast.supported()}>
+                  <Tooltip placement="top" gutter={4} title="Fast">
+                    <div
+                      class="flex items-center gap-1.5 text-13-regular text-color-secondary"
+                      style={{
+                        height: "28px",
+                        opacity: buttonsSpring(),
+                        transform: `scale(${0.95 + buttonsSpring() * 0.05})`,
+                        filter: `blur(${(1 - buttonsSpring()) * 2}px)`,
+                        "pointer-events": buttonsSpring() > 0.5 ? "auto" : "none",
+                      }}
+                    >
+                      <SwitchControl
+                        checked={local.model.fast.current()}
+                        onChange={(checked) => local.model.fast.set(checked)}
+                        hideLabel
+                      >
+                        Fast
+                      </SwitchControl>
+                    </div>
+                  </Tooltip>
+                </Show>
               </div>
             </div>
             <div class="shrink-0">

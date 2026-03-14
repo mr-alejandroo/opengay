@@ -223,6 +223,7 @@ export function createPromptSubmit(input: PromptSubmitInput) {
     }
     const agent = currentAgent.name
     const variant = local.model.variant.current()
+    const fast = local.model.fast.current()
 
     const clearInput = () => {
       prompt.reset()
@@ -403,6 +404,7 @@ export function createPromptSubmit(input: PromptSubmitInput) {
         messageID,
         parts: requestParts,
         variant,
+        fast: fast || undefined,
       })
     }
 

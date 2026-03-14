@@ -85,6 +85,7 @@ export function Footer() {
             <text fg={theme.textMuted}>/status</text>
           </Match>
         </Switch>
+        <text fg={theme.success}>✦ patched</text>
       </box>
     </box>
   )

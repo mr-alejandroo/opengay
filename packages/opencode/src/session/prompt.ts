@@ -109,6 +109,7 @@ export namespace SessionPrompt {
     format: MessageV2.Format.optional(),
     system: z.string().optional(),
     variant: z.string().optional(),
+    fast: z.boolean().optional(),
     parts: z.array(
       z.discriminatedUnion("type", [
         MessageV2.TextPart.omit({
@@ -977,6 +978,7 @@ export namespace SessionPrompt {
       system: input.system,
       format: input.format,
       variant,
+      fast: input.fast,
     }
     using _ = defer(() => InstructionPrompt.clear(info.id))
 

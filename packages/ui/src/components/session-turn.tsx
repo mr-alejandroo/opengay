@@ -340,6 +340,23 @@ export function SessionTurn(
     if (end < start) return undefined
     return end - start
   })
+  const avgSpeed = createMemo(() => {
+    const msgs = assistantMessages()
+    if (!msgs.length) return undefined
+    const speeds = msgs
+      .map((msg) => {
+        const completed = msg.time.completed
+        if (typeof completed !== "number") return null
+        const ms = completed - msg.time.created
+        if (ms <= 0) return null
+        if (!msg.tokens.output) return null
+        return msg.tokens.output / (ms / 1000)
+      })
+      .filter((s): s is number => s !== null)
+    if (!speeds.length) return undefined
+    return Math.round(speeds.reduce((a, b) => a + b, 0) / speeds.length)
+  })
+
   const assistantVisible = createMemo(() =>
     assistantMessages().reduce((count, message) => {
       const parts = list(data.store.part?.[message.id], emptyParts)
@@ -408,6 +425,7 @@ export function SessionTurn(
                     messages={assistantMessages()}
                     showAssistantCopyPartID={assistantCopyPartID()}
                     turnDurationMs={turnDurationMs()}
+                    avgSpeed={avgSpeed()}
                     working={working()}
                     showReasoningSummaries={showReasoningSummaries()}
                     shellToolDefaultOpen={props.shellToolDefaultOpen}

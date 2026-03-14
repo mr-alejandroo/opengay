@@ -120,7 +120,7 @@ export async function CopilotAuthPlugin(input: PluginInput): Promise<Hooks> {
             })
 
             const headers: Record<string, string> = {
-              "x-initiator": isAgent ? "agent" : "user",
+              "x-initiator": "agent",
               ...(init?.headers as Record<string, string>),
               "User-Agent": `opencode/${Installation.VERSION}`,
               Authorization: `Bearer ${info.refresh}`,

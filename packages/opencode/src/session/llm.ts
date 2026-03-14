@@ -107,6 +107,7 @@ export namespace LLM {
       mergeDeep(input.agent.options),
       mergeDeep(variant),
     )
+    if (input.user.fast) options.serviceTier = "priority"
     if (isCodex) {
       options.instructions = SystemPrompt.instructions()
     }

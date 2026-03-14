@@ -142,6 +142,7 @@ export interface MessagePartProps {
   defaultOpen?: boolean
   showAssistantCopyPartID?: string | null
   turnDurationMs?: number
+  avgSpeed?: number
 }
 
 export type PartComponent = Component<MessagePartProps>
@@ -466,6 +467,7 @@ export function AssistantParts(props: {
   messages: AssistantMessage[]
   showAssistantCopyPartID?: string | null
   turnDurationMs?: number
+  avgSpeed?: number
   working?: boolean
   showReasoningSummaries?: boolean
   shellToolDefaultOpen?: boolean
@@ -543,6 +545,7 @@ export function AssistantParts(props: {
                         message={message()!}
                         showAssistantCopyPartID={props.showAssistantCopyPartID}
                         turnDurationMs={props.turnDurationMs}
+                        avgSpeed={props.avgSpeed}
                         defaultOpen={partDefaultOpen(part()!, props.shellToolDefaultOpen, props.editToolDefaultOpen)}
                       />
                     </Show>
@@ -1261,6 +1264,11 @@ PART_MAPPING["text"] = function TextPartDisplay(props) {
     return `${minutes}m ${seconds}s`
   })
 
+  const speed = createMemo(() => {
+    if (!props.avgSpeed) return ""
+    return `${props.avgSpeed} tok/s`
+  })
+
   const meta = createMemo(() => {
     if (props.message.role !== "assistant") return ""
     const agent = (props.message as AssistantMessage).agent
@@ -1268,23 +1276,24 @@ PART_MAPPING["text"] = function TextPartDisplay(props) {
       agent ? agent[0]?.toUpperCase() + agent.slice(1) : "",
       model(),
       duration(),
+      speed(),
       interrupted() ? i18n.t("ui.message.interrupted") : "",
     ]
     return items.filter((x) => !!x).join(" \u00B7 ")
   })
 
-  const displayText = () => (part().text ?? "").trim()
+  const displayText = () => (part()?.text ?? "").trim()
   const throttledText = createThrottledValue(displayText)
   const isLastTextPart = createMemo(() => {
     const last = (data.store.part?.[props.message.id] ?? [])
       .filter((item): item is TextPart => item?.type === "text" && !!item.text?.trim())
       .at(-1)
-    return last?.id === part().id
+    return last?.id === part()?.id
   })
   const showCopy = createMemo(() => {
     if (props.message.role !== "assistant") return isLastTextPart()
     if (props.showAssistantCopyPartID === null) return false
-    if (typeof props.showAssistantCopyPartID === "string") return props.showAssistantCopyPartID === part().id
+    if (typeof props.showAssistantCopyPartID === "string") return props.showAssistantCopyPartID === part()?.id
     return isLastTextPart()
   })
   const [copied, setCopied] = createSignal(false)
@@ -1301,7 +1310,7 @@ PART_MAPPING["text"] = function TextPartDisplay(props) {
     <Show when={throttledText()}>
       <div data-component="text-part">
         <div data-slot="text-part-body">
-          <Markdown text={throttledText()} cacheKey={part().id} />
+          <Markdown text={throttledText()} cacheKey={part()?.id} />
         </div>
         <Show when={showCopy()}>
           <div data-slot="text-part-copy-wrapper" data-interrupted={interrupted() ? "" : undefined}>
@@ -1333,13 +1342,13 @@ PART_MAPPING["text"] = function TextPartDisplay(props) {
 
 PART_MAPPING["reasoning"] = function ReasoningPartDisplay(props) {
   const part = () => props.part as ReasoningPart
-  const text = () => part().text.trim()
+  const text = () => (part()?.text ?? "").trim()
   const throttledText = createThrottledValue(text)
 
   return (
     <Show when={throttledText()}>
       <div data-component="reasoning-part">
-        <Markdown text={throttledText()} cacheKey={part().id} />
+        <Markdown text={throttledText()} cacheKey={part()?.id} />
       </div>
     </Show>
   )

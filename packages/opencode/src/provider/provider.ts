@@ -873,6 +873,7 @@ export namespace Provider {
           providerID: "github-copilot-enterprise",
         })),
       }
+
     }
 
     function mergeProvider(providerID: string, provider: Partial<Info>) {

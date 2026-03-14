@@ -243,12 +243,14 @@ export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
           supported() {
             const m = current()
             if (!m) return false
-            return m.id === "gpt-5.4" && m.provider.id === "openai"
+            if (m.id === "gpt-5.4" && m.provider.id === "openai") return true
+            if (m.id === "claude-opus-4.6" && m.provider.id.startsWith("github-copilot")) return true
+            return false
           },
           current() {
             const m = current()
             if (!m) return false
-            if (!(m.id === "gpt-5.4" && m.provider.id === "openai")) return false
+            if (!this.supported()) return false
             return models.fast.get({ providerID: m.provider.id, modelID: m.id }) ?? false
           },
           set(value: boolean) {

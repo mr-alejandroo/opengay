@@ -1496,7 +1496,7 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                   />
                 </TooltipKeybind>
                 <Show when={local.model.fast.supported()}>
-                  <Tooltip placement="top" gutter={4} title="Fast">
+                  <Tooltip placement="top" gutter={4} value="Fast">
                     <div
                       class="flex items-center gap-1.5 text-13-regular text-color-secondary"
                       style={{

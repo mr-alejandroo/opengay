@@ -107,7 +107,12 @@ export namespace LLM {
       mergeDeep(input.agent.options),
       mergeDeep(variant),
     )
-    if (input.user.fast) options.serviceTier = "priority"
+    if (input.user.fast) {
+      if (input.model.id === "claude-opus-4.6" && input.model.providerID.startsWith("github-copilot")) {
+        input.model.headers = { ...input.model.headers, "anthropic-beta": "fast-mode-2026-02-01" }
+        input.model.api = { ...input.model.api, url: "https://api.individual.githubcopilot.com" }
+      } else options.serviceTier = "priority"
+    }
     if (isCodex) {
       options.instructions = SystemPrompt.instructions()
     }
